@@ -1,10 +1,40 @@
 .content {
     position: absolute;
+    top: 100px;
+    position: absolute;
     height: 100%;
     width: 100%;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.study-list {
+    width: 85%;
+    max-width: 1400px;
+
+    display: grid;
+    grid-template-columns: auto auto auto;
+
+    margin: 10px;
+}
+
+.study-object {
+    background-color: var(--background-main);
+    color: #fff;
+    margin: 10px;
+
+    height: 175px;
+
+    border: solid 4px var(--border-main);
+    border-radius: 7px;
+
+    backdrop-filter: blur(20px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
 }
+

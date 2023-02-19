@@ -5,6 +5,12 @@
 	outline: none;
 }
 
+:root {
+	--background-main: rgba(0, 0, 0, 0.185);
+	--shadow-main: black;
+	--border-main: rgba(0, 0, 0, 0.096);
+}
+
 .container {
 	position: absolute;
 	width: 100%;
@@ -15,4 +21,11 @@
 
 	overflow-x: hidden;
 	overflow-y: scroll;
+
+	background-size: cover;
+	background-position: right center;
+	background-repeat: repeat;
+	background-image: url(./assets/img/background.png);
+
+	background-color: black;
 }

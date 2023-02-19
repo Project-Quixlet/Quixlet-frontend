@@ -22,10 +22,13 @@ export default function Frontpage() {
 
     return (
         <div className={styles['content']}>
+  
             <h1>Trending sets</h1>
             <TrendingList />
+
             <h1>Recent sets</h1>
             <RecentList />
+
             <h1>Starred sets</h1>
             <StarredList />
         </div>
@@ -40,8 +43,10 @@ const TrendingList = () => {
 
     return (
         <div className={styles['study-list']}>
-            {trending.list.map(study => {
-                return <StudyObject key={study.hash} study={study} />
+            {trending.list.map((study, i) => {
+                return (
+                    <StudyObject study={study} />  
+                )
             })}
         </div>
     )
@@ -86,6 +91,23 @@ const StarredList = () => {
 
 const StudyObject = ({study}) => {
     return (
+        <>
+            <div className={styles['study-object']}>
+                <h1>{study.name}</h1>
+                <h3>{study.creator}</h3>
+                <div className={styles['study-info']}>
+                    <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
+                    <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
+                </div>
+            </div>
+            <div className={styles['study-object']}>
+            <h1>{study.name}</h1>
+            <h3>{study.creator}</h3>
+            <div className={styles['study-info']}>
+                <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
+                <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
+            </div>
+        </div>
         <div className={styles['study-object']}>
             <h1>{study.name}</h1>
             <h3>{study.creator}</h3>
@@ -94,5 +116,6 @@ const StudyObject = ({study}) => {
                 <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
             </div>
         </div>
+        </>
     )
 }
