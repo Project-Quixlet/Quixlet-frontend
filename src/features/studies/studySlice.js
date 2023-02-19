@@ -1,12 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchTrending } from '../../requests/study-api';
 
 export const getTrending = createAsyncThunk(
     'studies/getTrending',
     async (options, thunkAPI) => {
         return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                return resolve({yeet: "yeet"});
-            }, 1000);
+            const trending = thunkAPI.getState().studies.frontpage.trending;
+
+            if(!trending.isLoading) return resolve({changed: false})
+
+            fetchTrending()
+                .then(list => {
+                    return resolve({changed: true, list})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
         });
     }
 )
@@ -15,11 +25,11 @@ export const studySlice = createSlice({
     name: 'studies',
     initialState: {
         frontpage: {
-            recent: {
+            trending: {
                 isLoading: true,
                 list: []
             },
-            trending: {
+            recent: {
                 isLoading: true,
                 list: []
             },
@@ -33,7 +43,14 @@ export const studySlice = createSlice({
     reducers: {},
     extraReducers: {
         [getTrending.fulfilled]: (state, action) => {
-            console.log("yeet!");
+            if(!action.payload.changed) {
+                return;
+            }
+
+            const {list} = action.payload;
+            state.frontpage.trending.isLoading = false;
+            state.frontpage.trending.list = [...state.frontpage.trending.list, ...list];
+            console.log(list);
         }
     }
 })

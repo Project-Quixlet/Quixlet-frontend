@@ -28,6 +28,24 @@ const login = (credentials) => {
     });
 }
 
+const fetchTrending = () => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/trending`;
+
+        fetchJson(url, {
+            method: 'GET',
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
 export {
-    login
+    login,
+    fetchTrending
 }
