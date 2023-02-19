@@ -11,14 +11,19 @@ import {
 import Navbar from '../Navbar/Navbar';
 import Frontpage from '../Frontpage/Frontpage';
 import Login from '../Login/Login';
+import Study from '../Study/Study';
+import { useAuth } from '../../features/authentication/authSlice';
 
 export default function App() {
+    const auth = useSelector(useAuth);
+
     return (
         <BrowserRouter>
             <Navbar />
             <Routes>
                 <Route path='/' element={<Frontpage />} />
                 <Route path='/login' element={<Login />} />
+                <Route path='/study/:id' element={<Study />} />
             </Routes>
         </BrowserRouter>
     )

@@ -85,9 +85,31 @@ const fetchStarred = (auth) => {
     });
 }
 
+const fetchStudy = (auth, hash) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/get/${hash}`;
+        const headers = {};
+        if(auth) headers['token'] = auth;
+        
+
+        fetchJson(url, {
+            method: 'GET',
+            headers
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
 export {
     login,
     fetchTrending,
     fetchRecent,
-    fetchStarred
+    fetchStarred,
+    fetchStudy
 }

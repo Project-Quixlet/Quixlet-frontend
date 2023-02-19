@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchRecent, fetchStarred, fetchTrending } from '../../requests/study-api';
+import { fetchRecent, fetchStarred, fetchStudy, fetchTrending } from '../../requests/study-api';
 
 export const getTrending = createAsyncThunk(
     'studies/getTrending',
@@ -65,6 +65,27 @@ export const getStarred = createAsyncThunk(
     }
 )
 
+export const getStudy = createAsyncThunk(
+    'studies/getStudy',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const map = thunkAPI.getState().studies.map;
+
+            const auth = options['auth'] ?? null;
+            const hash = options['hash'];
+
+            fetchStudy(auth, hash)
+                .then(study => {
+                    return resolve({changed: true, study: study})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
 export const studySlice = createSlice({
     name: 'studies',
     initialState: {
@@ -82,7 +103,8 @@ export const studySlice = createSlice({
                 list: []
             }
         },
-        studies: {}
+        studies: {},
+        isLoading: false
     },
     reducers: {},
     extraReducers: {
@@ -112,13 +134,28 @@ export const studySlice = createSlice({
             const {list} = action.payload;
             state.frontpage.starred.isLoading = false;
             state.frontpage.starred.list = [...state.frontpage.starred.list, ...list];
+        },
+        [getStudy.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+
+            const { study } = action.payload;
+            const { hash } = study;
+
+            state.studies[hash] = {...state.studies[hash], ...study}
+            state.isLoading = false;
+        },
+        [getStudy.pending]: (state, action) => {
+            state.isLoading = true;
         }
     }
 })
 
 export const useStudies = (state) => ({
     frontpage: state.studies.frontpage,
-    map: state.studies.studies
+    map: state.studies.studies,
+    isLoading: state.studies.isLoading
 })
 
 export default studySlice.reducer;

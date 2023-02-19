@@ -68,7 +68,7 @@ const RecentList = () => {
 const StarredList = () => {
     const auth = useSelector(useAuth);
     const studies = useSelector(useStudies);
-    const starred = studies.frontpage.recent;
+    const starred = studies.frontpage.starred;
 
     if(!auth.status) return <h1>You must login to see your starred studies</h1>
     if(starred.isLoading) return <>Loading...</>
