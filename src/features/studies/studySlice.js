@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchTrending } from '../../requests/study-api';
+import { fetchRecent, fetchStarred, fetchTrending } from '../../requests/study-api';
 
 export const getTrending = createAsyncThunk(
     'studies/getTrending',
@@ -11,6 +11,50 @@ export const getTrending = createAsyncThunk(
 
             fetchTrending()
                 .then(list => {
+                    return resolve({changed: true, list})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
+export const getRecent = createAsyncThunk(
+    'studies/getRecent',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const recent = thunkAPI.getState().studies.frontpage.recent;
+            const auth = options['auth'];
+
+            if(!recent.isLoading) return resolve({changed: false})
+
+            fetchRecent(auth)
+                .then(list => {
+                    console.log(list);
+                    return resolve({changed: true, list})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
+export const getStarred = createAsyncThunk(
+    'studies/getStarred',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const starred = thunkAPI.getState().studies.frontpage.starred;
+            const auth = options['auth'];
+
+            if(!starred.isLoading) return resolve({changed: false})
+
+            fetchStarred(auth)
+                .then(list => {
+                    console.log(list);
                     return resolve({changed: true, list})
                 })
                 .catch(err => {
@@ -33,7 +77,7 @@ export const studySlice = createSlice({
                 isLoading: true,
                 list: []
             },
-            favorite: {
+            starred: {
                 isLoading: true,
                 list: []
             }
@@ -50,7 +94,24 @@ export const studySlice = createSlice({
             const {list} = action.payload;
             state.frontpage.trending.isLoading = false;
             state.frontpage.trending.list = [...state.frontpage.trending.list, ...list];
-            console.log(list);
+        },
+        [getRecent.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+
+            const {list} = action.payload;
+            state.frontpage.recent.isLoading = false;
+            state.frontpage.recent.list = [...state.frontpage.recent.list, ...list];
+        },
+        [getStarred.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+
+            const {list} = action.payload;
+            state.frontpage.starred.isLoading = false;
+            state.frontpage.starred.list = [...state.frontpage.starred.list, ...list];
         }
     }
 })

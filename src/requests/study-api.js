@@ -45,7 +45,49 @@ const fetchTrending = () => {
     });
 }
 
+const fetchRecent = (auth) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/recent`;
+
+        fetchJson(url, {
+            method: 'GET',
+            headers: {
+                token: auth
+            }
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
+const fetchStarred = (auth) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/starred`;
+
+        fetchJson(url, {
+            method: 'GET',
+            headers: {
+                token: auth
+            }
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
 export {
     login,
-    fetchTrending
+    fetchTrending,
+    fetchRecent,
+    fetchStarred
 }

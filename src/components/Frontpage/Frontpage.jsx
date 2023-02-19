@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTrending, useStudies } from '../../features/studies/studySlice';
+import { useAuth } from '../../features/authentication/authSlice';
+import { getRecent, getStarred, getTrending, useStudies } from '../../features/studies/studySlice';
 
 
 import styles from './Frontpage.module.css'
 
 export default function Frontpage() {
     const dispatch = useDispatch();
+    const auth = useSelector(useAuth);
 
     const initialize = () => {
         dispatch(getTrending())
+        if (auth.status) {
+            dispatch(getRecent({auth: auth.token}))
+            dispatch(getStarred({auth: auth.token}))
+        }
     }
 
     useEffect(initialize, []);
 
     return (
         <div className={styles['content']}>
-            <div className={styles['trending-list']}>
-                <TrendingList />
-            </div>
+            <h1>Trending sets</h1>
+            <TrendingList />
+            <h1>Recent sets</h1>
+            <RecentList />
+            <h1>Starred sets</h1>
+            <StarredList />
         </div>
     )
 }
@@ -30,11 +39,48 @@ const TrendingList = () => {
     if(trending.isLoading) return <>Loading...</>
 
     return (
-        <>
+        <div className={styles['study-list']}>
             {trending.list.map(study => {
                 return <StudyObject key={study.hash} study={study} />
             })}
-        </>
+        </div>
+    )
+}
+
+const RecentList = () => {
+    const auth = useSelector(useAuth);
+    const studies = useSelector(useStudies);
+    const recent = studies.frontpage.recent;
+
+    if(!auth.status) return <h1>You must login to see your recent studies</h1>
+    if(recent.isLoading) return <>Loading...</>
+
+    return (
+        <div className={styles['study-list']}>
+            {recent.list.map(study => {
+                return <StudyObject key={study.hash} study={study} />
+            })}
+            {recent.list.length === 0 ? <h2>Previously studied sets will appear here</h2> : null} 
+        </div>
+    )
+}
+
+const StarredList = () => {
+    const auth = useSelector(useAuth);
+    const studies = useSelector(useStudies);
+    const starred = studies.frontpage.recent;
+
+    if(!auth.status) return <h1>You must login to see your starred studies</h1>
+    if(starred.isLoading) return <>Loading...</>
+
+    return (
+        <div className={styles['study-list']}>
+            <h1>Starred sets</h1>
+            {starred.list.map(study => {
+                return <StudyObject key={study.hash} study={study} />
+            })}
+            {starred.list.length === 0 ? <h2>You haven't starred any study</h2> : null} 
+        </div>
     )
 }
 
