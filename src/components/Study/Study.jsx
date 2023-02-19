@@ -11,9 +11,6 @@ export default function Study() {
     const dispatch = useDispatch();
     const auth = useSelector(useAuth);
 
-    const studies = useSelector(useStudies);
-
-
     const [current, setCurrent] = useState(0);
 
     const initialize = () => {
@@ -69,27 +66,28 @@ const StudyCard = ({study, current, setCurrent}) => {
 
     return (
         <div className={styles['study-card']}>
-            <MultipleMode study={study} pair={pair} next={next} previous={previous}/>
+            <MultipleMode study={study} current={current} pair={pair} next={next} previous={previous}/>
         </div>
     )
 }
 
-const CardMode = ({pair, next, previous}) => {
+const CardMode = ({study, pair, current, next, previous}) => {
     const [visible, setVisible] = useState(false);
     if(!pair) return <></>
+
     return (
         <div className={styles['card-mode']}>   
             <h1 onClick={() => setVisible(!visible)}>{visible ? pair.definition : pair.value}</h1>
             <div className={styles['card-navigation']}>
-                <button onClick={previous}>Previous</button>
+                <button disabled={current == 0} onClick={previous}>Previous</button>
                 <br />
-                <button onClick={next}>Next</button>
+                <button disabled={current == study.set.length - 1} onClick={next}>Next</button>
             </div>
         </div>  
     )
 }
 
-const MultipleMode = ({study, pair, next, previous}) => {
+const MultipleMode = ({study, pair, next}) => {
     const [status, setStatus] = useState('');
     if(!pair) return <></>
 
@@ -97,12 +95,12 @@ const MultipleMode = ({study, pair, next, previous}) => {
 
     const validate = (query) => {
         if(pair.definition == query) {
-            console.log('correct!');
+            setStatus('');
             next();
             return;
         }
 
-        console.log('nope')
+        setStatus('Incorrect');
     }
 
     return (
@@ -111,8 +109,35 @@ const MultipleMode = ({study, pair, next, previous}) => {
             {
                 randomized.map((term, i) => <div key={i}><button onClick={() => validate(term)}>{term}</button><br /></div> )
             }
-            <h4></h4>
+            <h4>{status}</h4>
         </div>  
+    )
+}
+
+const WriteMode = ({study, pair, next}) => {
+    const [status, setStatus] = useState('');
+    const [answer, setAnswer] = useState('');
+    if(!pair) return <></>
+
+    const validate = () => {
+        if(pair.definition == answer) {
+            setStatus('');
+            next();
+            return;
+        }
+
+        setStatus('Incorrect');
+    }
+
+    return (
+        <div className={styles['write-mode']}>
+            <h1>{pair.value}</h1>
+            <form onSubmit={e => {e.preventDefault(); validate()}}>
+                <input placeholder='Your answer' type='text' onChange={e => setAnswer(e.target.value)} />
+                <button>Submit</button>
+            </form>
+            <h4>{status}</h4>
+        </div>
     )
 }
 
