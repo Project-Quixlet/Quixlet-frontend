@@ -129,13 +129,15 @@ const MultipleMode = ({study, pair, next}) => {
 const WriteMode = ({study, pair, next}) => {
     const [status, setStatus] = useState('');
     const [answer, setAnswer] = useState('');
-    const [hint, setHint] = useState('');
+    const [hint, setHint] = useState([]);
+
     if(!pair) return <></>
 
     const validate = () => {
         if(pair.definition == answer) {
             setStatus('');
-            setAnswer('')
+            setAnswer('');
+            setHint([]);
             next();
             return;
         }
@@ -143,17 +145,44 @@ const WriteMode = ({study, pair, next}) => {
         setStatus('Incorrect');
     }
 
+    const requestHint = () => {
+        const word = Array.from(pair.definition);
+
+        if(hint.length == 0) {
+            let h = [word.at(0), ...Array(word.length - 1).fill('_', 0)];
+            const idxs = indexesOf(word, ' ');
+            idxs.forEach(i => {h[i] = ' '})
+            setHint(h);
+            return;
+        } else {
+            const p = word.filter(c => !hint.includes(c));
+            if(p.length == 0) return;
+
+            const rnd = p[Math.floor(Math.random() * p.length)]
+            const idxs = indexesOf(word, rnd);
+
+            // Create shallow copy
+            let h = [...hint];
+            idxs.forEach(i => {h[i] = word[i]})
+
+            console.log(h);
+            setHint(h);
+        }
+    }
+
     return (
         <div className={styles['write-mode']}>
             <h1>{pair.value}</h1>
+            <h4>{status}</h4>
+            <ul>{hint.map((c, i) => <a key={i}>{c}</a>)}</ul>
+
             <form onSubmit={e => {e.preventDefault(); validate()}}>
-                <input placeholder='Your answer' type='text' onChange={e => setAnswer(e.target.value)} />
+                <input placeholder='Your answer' type='text' value={answer} onChange={e => setAnswer(e.target.value)} />
                 <button>Submit</button>
             </form>
-            <h4>{status}</h4>
             <div className={styles['options']}>
                 <button>Don't know?</button>
-                <button>Request hint</button>
+                <button onClick={requestHint} >Request hint</button>
             </div>  
         </div>
     )
@@ -163,3 +192,8 @@ const shuffle = unshuffled => unshuffled
     .map(value => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
+
+ const indexesOf = (l, n) => 
+    l.reduce(
+      (acc, v, i) => (v === n && acc.push(i), acc),
+    []);
