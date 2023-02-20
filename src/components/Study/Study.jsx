@@ -130,19 +130,37 @@ const WriteMode = ({study, pair, next}) => {
     const [status, setStatus] = useState('');
     const [answer, setAnswer] = useState('');
     const [hint, setHint] = useState([]);
+    const [failed, setFailed] = useState(false);
+    const [retyping, setRetyping] = useState(false);
 
     if(!pair) return <></>
 
+    const onUpdate = (value) => {
+        setAnswer(value)
+            
+        if(retyping && value == pair.definition) {
+            setAnswer('');
+            setRetyping(false);
+            next();
+            return;
+        }
+    }
+
     const validate = () => {
-        if(pair.definition == answer) {
+        if(answer.length == 0 || retyping) return;
+        
+        if(pair.definition == answer || failed) {
             setStatus('');
             setAnswer('');
             setHint([]);
+            setFailed(false);
             next();
             return;
         }
 
-        setStatus('Incorrect');
+        setFailed(true);
+        setStatus('Incorrect - the right one was:');
+        setHint(Array.from(pair.definition))
     }
 
     const requestHint = () => {
@@ -170,18 +188,25 @@ const WriteMode = ({study, pair, next}) => {
         }
     }
 
+    const retype = () => {
+        setAnswer('');
+        setStatus('');
+        setHint([]);
+        setRetyping(true);
+    }
+
     return (
         <div className={styles['write-mode']}>
-            <h1>{pair.value}</h1>
+            <h1>{retyping ? pair.definition : pair.value}</h1>
             <h4>{status}</h4>
             <ul>{hint.map((c, i) => <a key={i}>{c}</a>)}</ul>
 
             <form onSubmit={e => {e.preventDefault(); validate()}}>
-                <input placeholder='Your answer' type='text' value={answer} onChange={e => setAnswer(e.target.value)} />
-                <button>Submit</button>
+                <input placeholder={retyping ? 'Noituus' : 'Your answer'} type='text' value={answer} onChange={e => onUpdate(e.target.value)} />
+                <button disabled={answer.length == 0}>Submit</button>
             </form>
             <div className={styles['options']}>
-                <button>Don't know?</button>
+                <button onClick={retype}>Don't know?</button>
                 <button onClick={requestHint} >Request hint</button>
             </div>  
         </div>

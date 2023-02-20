@@ -243,15 +243,17 @@
 .write-mode h4 {
     color: red;
     margin-top: -20px;
-    font-size: 20px;
+    font-size: 17px;
 }
 
 .write-mode ul {
-    font-size: 15px;
+    font-size: 20px;
+    margin: 5px;
 }
 
 .write-mode ul a {
     margin: 1px;
+    font-weight: bold;
 }
 
 .write-mode .options {
