@@ -12,6 +12,7 @@ export default function Study() {
     const auth = useSelector(useAuth);
 
     const [current, setCurrent] = useState(0);
+    const [mode, setMode] = useState('CARDS');
 
     const initialize = () => {
         dispatch(getStudy({auth: auth.token, hash: id}))
@@ -21,12 +22,12 @@ export default function Study() {
 
     return (
         <div className={styles['content']}>
-            <StudySet id={id} current={current} setCurrent={e => setCurrent(e)}/>
+            <StudySet id={id} current={current} mode={mode} setCurrent={e => setCurrent(e)} setMode={e => setMode(e)}/>
         </div>
     )
 }
 
-const StudySet = ({id, terms, current, setCurrent}) => {
+const StudySet = ({id, terms, current, mode, setCurrent, setMode}) => {
     const studies = useSelector(useStudies);
     const study = studies.map[id];
 
@@ -34,13 +35,14 @@ const StudySet = ({id, terms, current, setCurrent}) => {
 
     return (
         <>
-            <StudyInfo study={study} />
-            <StudyArea study={study} current={current} setCurrent={setCurrent} />
+            <StudyInfo study={study} mode={mode} />
+            <StudyMode mode={mode} setMode={setMode} />
+            <StudyArea study={study} mode={mode} current={current} setCurrent={setCurrent} />
         </>
     )
 }
 
-const StudyInfo = ({study}) => {
+const StudyInfo = ({study, mode}) => {
     return (
         <div className={styles['study-title']}>
             <h1>{study.name}</h1>
@@ -48,12 +50,27 @@ const StudyInfo = ({study}) => {
             <div className={styles['study-info']}>
                 <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
                 <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
+                <h4>{`Study-mode: ${mode}`}</h4>
             </div>
         </div>
     )
 }
 
-const StudyArea = ({study, current, setCurrent}) => {
+const StudyMode = ({mode, setMode}) => {
+    return (
+        <div className={styles['study-mode']}>
+            <h2>Study mode</h2>
+            <div className={styles['mode-selector']}>
+                <button onClick={() => setMode('CARDS')} disabled={mode == 'CARDS'}>Cards</button>
+                <button onClick={() => setMode('MULTIPLE')} disabled={mode == 'MULTIPLE'}>Multiple Choice</button>
+                <button onClick={() => setMode('WRITE')} disabled={mode == 'WRITE'}>Write</button>
+                <button onClick={() => setMode('LEARN')} disabled={mode == 'LEARN'}>Learn</button>
+            </div>
+        </div>
+    )
+}
+
+const StudyArea = ({study, current, mode, setCurrent}) => {
     
     const pair = study.set[current];
 
@@ -68,7 +85,16 @@ const StudyArea = ({study, current, setCurrent}) => {
 
     return (
         <div className={styles['study-area']}>
-            <WriteMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+            {
+                mode == 'CARDS' ? <CardMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+                :
+                mode == 'MULTIPLE' ? <MultipleMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+                :
+                mode == 'WRITE' ? <WriteMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+                :
+                <LearnMode study={study} current={current} pair={pair} next={next} previous={previous} setCurrent={setCurrent}/>
+            }
+            
         </div>
     )
 }
@@ -210,6 +236,39 @@ const WriteMode = ({study, pair, next}) => {
                 <button onClick={requestHint} >Request hint</button>
             </div>  
         </div>
+    )
+}
+
+const LearnMode = ({study, pair, current, next: nextTerm, previous, setCurrent}) => {
+    const [round, setRound] = useState(0);
+    const [writing, setWriting] = useState(false);
+
+    const next = () => {
+        if (writing) {
+            if(current % 10 == 0 && current != 0) {
+                setWriting(false);
+                nextTerm();
+                return;
+            }
+        } else {
+            if(current % 10 == 0 && current != 0) {
+                setWriting(true);
+                setCurrent(current - 9);
+                return;
+            }
+        }
+
+        nextTerm();
+    }
+
+    return (
+        <>
+            {
+                writing ? <WriteMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+                :
+                <MultipleMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+            }
+        </>
     )
 }
 
