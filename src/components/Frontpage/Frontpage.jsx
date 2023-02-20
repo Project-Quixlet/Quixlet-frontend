@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth } from '../../features/authentication/authSlice';
 import { getRecent, getStarred, getTrending, useStudies } from '../../features/studies/studySlice';
+import { useNavigate } from 'react-router-dom';
 
 
 import styles from './Frontpage.module.css'
@@ -22,15 +23,18 @@ export default function Frontpage() {
 
     return (
         <div className={styles['content']}>
-  
-            <h1>Trending sets</h1>
-            <TrendingList />
-
-            <h1>Recent sets</h1>
-            <RecentList />
-
-            <h1>Starred sets</h1>
-            <StarredList />
+            <div className={styles['category']}>
+                <h1>Trending sets</h1>
+                <TrendingList />
+            </div>
+            <div className={styles['category']}>
+                <h1>Recent sets</h1>
+                <RecentList />
+            </div>
+            <div className={styles['category']}>
+                <h1>Starred sets</h1>
+                <StarredList />
+            </div>
         </div>
     )
 }
@@ -80,7 +84,6 @@ const StarredList = () => {
 
     return (
         <div className={styles['study-list']}>
-            <h1>Starred sets</h1>
             {starred.list.map(study => {
                 return <StudyObject key={study.hash} study={study} />
             })}
@@ -90,32 +93,15 @@ const StarredList = () => {
 }
 
 const StudyObject = ({study}) => {
+    const navigate = useNavigate();
     return (
-        <>
-            <div className={styles['study-object']}>
+        <div className={styles['study-object']} onClick={() => navigate(`/study/${study.hash}`)}>
+            <div className={styles['study-info']}>
                 <h1>{study.name}</h1>
-                <h3>{study.creator}</h3>
-                <div className={styles['study-info']}>
-                    <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
-                    <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
-                </div>
-            </div>
-            <div className={styles['study-object']}>
-            <h1>{study.name}</h1>
-            <h3>{study.creator}</h3>
-            <div className={styles['study-info']}>
-                <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
+                <h3>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h3>
+                <h4>{`By ${study.creator}`}</h4>
                 <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
             </div>
         </div>
-        <div className={styles['study-object']}>
-            <h1>{study.name}</h1>
-            <h3>{study.creator}</h3>
-            <div className={styles['study-info']}>
-                <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
-                <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
-            </div>
-        </div>
-        </>
     )
 }

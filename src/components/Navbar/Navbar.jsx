@@ -6,9 +6,10 @@ import styles from './Navbar.module.css'
 export default function Navbar() {
     return (
         <nav className={styles['navbar']}>
-            <Link to={'/'}>Home</Link>
-            <Link to={'/login'}>Login</Link>
-            <a>Search</a>
+            <div className={styles['side-bar']}>
+                <Link to={'/'}>Home</Link>
+                <Link to={'/login'}>Login</Link>
+            </div>
         </nav>
     )
 }

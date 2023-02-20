@@ -35,23 +35,25 @@ const StudySet = ({id, terms, current, setCurrent}) => {
     return (
         <>
             <StudyInfo study={study} />
-            <StudyCard study={study} current={current} setCurrent={setCurrent} />
+            <StudyArea study={study} current={current} setCurrent={setCurrent} />
         </>
     )
 }
 
 const StudyInfo = ({study}) => {
-    return (<div className={styles['study-title']}>
-        <h1>{study.name}</h1>
-        <h3>{`By ${study.creator}`}</h3>
-        <div className={styles['study-info']}>
-            <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
-            <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
+    return (
+        <div className={styles['study-title']}>
+            <h1>{study.name}</h1>
+            <h3>{`By ${study.creator}`}</h3>
+            <div className={styles['study-info']}>
+                <h4>{`${study.size} ${study.size == 1 ? 'term' : 'terms'}`}</h4>
+                <h4>{`${study.stars} ${study.stars == 1 ? 'star' : 'stars'}`}</h4>
+            </div>
         </div>
-    </div>)
+    )
 }
 
-const StudyCard = ({study, current, setCurrent}) => {
+const StudyArea = ({study, current, setCurrent}) => {
     
     const pair = study.set[current];
 
@@ -65,8 +67,8 @@ const StudyCard = ({study, current, setCurrent}) => {
 
 
     return (
-        <div className={styles['study-card']}>
-            <MultipleMode study={study} current={current} pair={pair} next={next} previous={previous}/>
+        <div className={styles['study-area']}>
+            <WriteMode study={study} current={current} pair={pair} next={next} previous={previous}/>
         </div>
     )
 }
@@ -75,14 +77,18 @@ const CardMode = ({study, pair, current, next, previous}) => {
     const [visible, setVisible] = useState(false);
     if(!pair) return <></>
 
+    const percentage = 100 * ((current + 1) / study.set.length);
+
     return (
         <div className={styles['card-mode']}>   
             <h1 onClick={() => setVisible(!visible)}>{visible ? pair.definition : pair.value}</h1>
+            <h2>Click the term to reveal the definition</h2>
             <div className={styles['card-navigation']}>
                 <button disabled={current == 0} onClick={previous}>Previous</button>
                 <br />
                 <button disabled={current == study.set.length - 1} onClick={next}>Next</button>
             </div>
+            <div className={styles['progress']} style={{transform: `scale(${percentage}%, 100%)`}} />
         </div>  
     )
 }
@@ -106,9 +112,15 @@ const MultipleMode = ({study, pair, next}) => {
     return (
         <div className={styles['multiple-mode']}>
             <h1>{pair.value}</h1>
-            {
-                randomized.map((term, i) => <div key={i}><button onClick={() => validate(term)}>{term}</button><br /></div> )
-            }
+            <div className={styles['choices']}>
+                {
+                    randomized.map((term, i) => {
+                        return (
+                            <button className={styles['choice']} key={i} onClick={() => validate(term)}>{term}</button>
+                        )
+                    })
+                }
+            </div>
             <h4>{status}</h4>
         </div>  
     )
@@ -117,11 +129,13 @@ const MultipleMode = ({study, pair, next}) => {
 const WriteMode = ({study, pair, next}) => {
     const [status, setStatus] = useState('');
     const [answer, setAnswer] = useState('');
+    const [hint, setHint] = useState('');
     if(!pair) return <></>
 
     const validate = () => {
         if(pair.definition == answer) {
             setStatus('');
+            setAnswer('')
             next();
             return;
         }
@@ -137,6 +151,10 @@ const WriteMode = ({study, pair, next}) => {
                 <button>Submit</button>
             </form>
             <h4>{status}</h4>
+            <div className={styles['options']}>
+                <button>Don't know?</button>
+                <button>Request hint</button>
+            </div>  
         </div>
     )
 }

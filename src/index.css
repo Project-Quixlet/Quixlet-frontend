@@ -6,9 +6,13 @@
 }
 
 :root {
-	--background-main: rgba(0, 0, 0, 0.185);
+	--accent-main: #495AEF;
+	--background-main: rgba(0, 0, 0, 0.082);
 	--shadow-main: black;
 	--border-main: rgba(0, 0, 0, 0.096);
+	--font-h1: black;
+	--font-h2: black;
+	--font-h3: black;
 }
 
 .container {
@@ -23,9 +27,8 @@
 	overflow-y: scroll;
 
 	background-size: cover;
-	background-position: right center;
+	background-position: center center;
 	background-repeat: repeat;
-	background-image: url(./assets/img/background.png);
 
-	background-color: black;
+	background-color: white;
 }
