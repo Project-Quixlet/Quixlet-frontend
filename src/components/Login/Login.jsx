@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth } from '../../features/authentication/authSlice';
 import { login as loginRequest } from '../../features/authentication/authSlice';
+import { redirect, useNavigate } from 'react-router-dom';
 
 import styles from './Login.module.css'
 
 export default function Login() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const auth = useSelector(useAuth);
 
     const [username, setUsername] = useState('');
@@ -15,6 +17,14 @@ export default function Login() {
     const login = () => {
         dispatch(loginRequest({username, password}))
     }
+
+    const onLogin = () => {
+        if(auth.status) {
+            navigate('/');
+        }
+    }
+
+    useEffect(onLogin, [auth.isLoading])
 
     return (
         <div className={styles['content']}>

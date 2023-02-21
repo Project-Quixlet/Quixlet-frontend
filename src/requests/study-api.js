@@ -105,6 +105,27 @@ const fetchStarred = (auth) => {
     });
 }
 
+const fetchOwn = (auth) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/own`;
+
+        fetchJson(url, {
+            method: 'GET',
+            headers: {
+                token: auth
+            }
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
+
 const fetchStudy = (auth, hash) => {
     return new Promise((resolve, reject) => {
         const url = `${studyApi}/studies/get/${hash}`;
@@ -132,5 +153,6 @@ export {
     fetchTrending,
     fetchRecent,
     fetchStarred,
+    fetchOwn,
     fetchStudy
 }

@@ -1,0 +1,158 @@
+.content {
+    position: absolute;
+    height: 100%;
+    width: calc(100% - 75px);
+    left: 75px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.side-bar {
+    position: absolute;
+    width: 300px;
+    height: calc(100% - 50px);
+
+    left: 0;
+    top: 50px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.study-list {
+    height: 90%;
+    width: 90%;
+    border-right: solid 1px black;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.study-object {
+    width: 90%;
+
+    margin: 10px;
+    padding: 5px;
+
+    border: solid 1px black;
+
+    cursor: pointer;
+}
+
+.study-object h1 {
+    padding-left: 10px;
+    font-size: 20px;
+}
+
+.study-object h3 {
+    padding-left: 10px;
+    font-size: 15px;
+    opacity: 50%;
+}
+
+.editor {
+    position: absolute;
+    left: 300px;
+    top: 50px;
+
+    width: calc(100% - 300px);
+    height: calc(100% - 50px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.editor h1 {
+    margin: 50px;
+}
+
+.terms {
+    width: 85%;
+    max-width: 550px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.term-field {
+    border: solid 1px black;
+
+    width: 100%;
+    margin: 5px;
+
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+}
+
+.value,
+.definition {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 50%;
+}
+
+.value label,
+.definition label {
+    margin: 5px;
+    opacity: 50%;
+}
+
+.value input,
+.definition input {
+    padding: 5px;
+    font-size: 17px;
+    width: 90%;
+    margin: 5px;
+
+    border-bottom: solid 3px black;
+}
+
+.value h4,
+.definition h4 {
+    height: 20px;
+    font-size: 15px;
+    font-weight: 100;
+    opacity: 50%;
+}
+
+.term-field .options {
+    width: 60px;
+    height: 90px;
+}
+
+.options button {
+    height: 20px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background: none;
+
+    cursor: pointer;
+}
+
+.options button:nth-child(2) {
+    margin-top: 50px;
+}
+
+.remove {
+    color: red;
+    font-size: 10px;
+}

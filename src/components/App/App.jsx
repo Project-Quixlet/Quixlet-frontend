@@ -12,6 +12,7 @@ import Navbar from '../Navbar/Navbar';
 import Frontpage from '../Frontpage/Frontpage';
 import Login from '../Login/Login';
 import Study from '../Study/Study';
+import Editor from '../Editor/Editor';
 import { useAuth } from '../../features/authentication/authSlice';
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
             <Routes>
                 <Route path='/' element={<Frontpage />} />
                 <Route path='/login' element={<Login />} />
+                <Route path='/editor' element={auth.status ? <Editor /> : <Login />} />
                 <Route path='/study/:id' element={<Study />} />
             </Routes>
         </BrowserRouter>

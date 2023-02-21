@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchRecent, fetchStarred, fetchStudy, fetchTrending } from '../../requests/study-api';
+import { fetchOwn, fetchRecent, fetchStarred, fetchStudy, fetchTrending } from '../../requests/study-api';
 
 export const getTrending = createAsyncThunk(
     'studies/getTrending',
@@ -65,6 +65,28 @@ export const getStarred = createAsyncThunk(
     }
 )
 
+export const getOwn = createAsyncThunk(
+    'studies/getOwn',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const own = thunkAPI.getState().studies.editor.own;
+            const auth = options['auth'];
+
+            if(!own.isLoading) return resolve({changed: false})
+
+            fetchOwn(auth)
+                .then(list => {
+                    console.log(list);
+                    return resolve({changed: true, list})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
 export const getStudy = createAsyncThunk(
     'studies/getStudy',
     async (options, thunkAPI) => {
@@ -103,6 +125,13 @@ export const studySlice = createSlice({
                 list: []
             }
         },
+        editor: {
+            own: {
+                isLoading: true,
+                list: []
+            },
+            isLoading: false
+        },
         studies: {},
         isLoading: false
     },
@@ -135,6 +164,15 @@ export const studySlice = createSlice({
             state.frontpage.starred.isLoading = false;
             state.frontpage.starred.list = [...state.frontpage.starred.list, ...list];
         },
+        [getOwn.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+
+            const {list} = action.payload;
+            state.editor.own.isLoading = false;
+            state.editor.own.list = [...state.editor.own.list, ...list];
+        },
         [getStudy.fulfilled]: (state, action) => {
             if(!action.payload.changed) {
                 return;
@@ -155,7 +193,8 @@ export const studySlice = createSlice({
 export const useStudies = (state) => ({
     frontpage: state.studies.frontpage,
     map: state.studies.studies,
-    isLoading: state.studies.isLoading
+    isLoading: state.studies.isLoading,
+    editor: state.studies.editor
 })
 
 export default studySlice.reducer;
