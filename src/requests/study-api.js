@@ -28,6 +28,26 @@ const login = (credentials) => {
     });
 }
 
+const fetchUserInfo = (auth) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/account/info`;
+
+        fetchJson(url, {
+            method: 'GET',
+            headers: {
+                token: auth
+            }
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
 const fetchTrending = () => {
     return new Promise((resolve, reject) => {
         const url = `${studyApi}/studies/trending`;
@@ -108,6 +128,7 @@ const fetchStudy = (auth, hash) => {
 
 export {
     login,
+    fetchUserInfo,
     fetchTrending,
     fetchRecent,
     fetchStarred,

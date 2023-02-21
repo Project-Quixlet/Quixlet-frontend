@@ -6,10 +6,12 @@ import { useNavigate } from 'react-router-dom';
 
 
 import styles from './Frontpage.module.css'
+import { useUser } from '../../features/account/userSlice';
 
 export default function Frontpage() {
     const dispatch = useDispatch();
     const auth = useSelector(useAuth);
+    const user = useSelector(useUser);
 
     const initialize = () => {
         dispatch(getTrending())
@@ -23,6 +25,7 @@ export default function Frontpage() {
 
     return (
         <div className={styles['content']}>
+            <h1>{user.status ? `Welcome, ${user.username}` : null}</h1>
             <div className={styles['category']}>
                 <h1>Trending sets</h1>
                 <TrendingList />
