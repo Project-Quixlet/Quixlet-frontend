@@ -119,6 +119,8 @@
     font-size: 65px;
     margin-bottom: 100px;
 
+    width: 85%;
+
     text-align: center;
 
     user-select: none;
@@ -126,6 +128,8 @@
 }
 
 .card-mode h2 {
+    top: 10px;
+    position: absolute;
     opacity: 0;
 
     transition: opacity .2s ease-in-out;
@@ -164,6 +168,8 @@
 .card-navigation button {
     width: 50%;
     height: 100%;
+    
+    cursor: pointer;
 }
 
 .multiple-mode {

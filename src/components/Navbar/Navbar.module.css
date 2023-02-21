@@ -8,6 +8,51 @@
     z-index: 99;
 }
 
+.search {
+    position: fixed;
+    
+    top: 10px;
+    width: calc(100% - 75px);
+    left: 75px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search form {
+    background-color: rgba(0, 0, 0, 0.055);
+    border-radius: 7px;
+
+    width: 85%;
+    max-width: 1000px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.search form input {
+    padding: 5px;
+    font-size: 17px;
+
+    width: 100%;
+    background: none;
+}
+
+.search form input::placeholder {
+    font-style: italic;
+}
+
+.search form button {
+    padding: 5px;
+    font-size: 17px;
+
+    width: 100px;
+    background: none;
+}
+
 .side-bar {
 
 }

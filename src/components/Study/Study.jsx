@@ -22,7 +22,7 @@ export default function Study() {
 
     return (
         <div className={styles['content']}>
-            <StudySet id={id} current={current} mode={mode} setCurrent={e => setCurrent(e)} setMode={e => setMode(e)}/>
+            <StudySet id={id} current={current} mode={mode} setCurrent={e => setCurrent(e)} setMode={e => {setMode(e); setCurrent(0);}}/>
         </div>
     )
 }
@@ -101,18 +101,19 @@ const StudyArea = ({study, current, mode, setCurrent}) => {
 
 const CardMode = ({study, pair, current, next, previous}) => {
     const [visible, setVisible] = useState(false);
-    if(!pair) return <></>
-
+    
     const percentage = 100 * ((current + 1) / study.set.length);
-
+    
+    if(!pair) return <></>
+    
     return (
         <div className={styles['card-mode']}>   
             <h1 onClick={() => setVisible(!visible)}>{visible ? pair.definition : pair.value}</h1>
-            <h2>Click the term to reveal the definition</h2>
+            <h2>{'Click the term to reveal the definition [Tab]'}</h2>
             <div className={styles['card-navigation']}>
-                <button disabled={current == 0} onClick={previous}>Previous</button>
+                <button disabled={current == 0} onClick={previous}>{'[<] Previous'}</button>
                 <br />
-                <button disabled={current == study.set.length - 1} onClick={next}>Next</button>
+                <button disabled={current == study.set.length - 1} onClick={next}>{'[>] Next'}</button>
             </div>
             <div className={styles['progress']} style={{transform: `scale(${percentage}%, 100%)`}} />
         </div>  
