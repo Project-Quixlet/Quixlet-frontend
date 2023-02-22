@@ -24,7 +24,7 @@ export default function Navbar() {
             <nav className={styles['side-bar']}>
                 <div className={styles['content']}>
                     {user.status ? <Link>Logout</Link> : null}
-                    {user.status ? <Link to={'/'}>My studies</Link> : <Link to={'/login'}>Login</Link>}
+                    {user.status ? <Link to={'/editor'}>My studies</Link> : <Link to={'/login'}>Login</Link>}
                     <div className={styles['logo']} />
                     <Link to={'/'}>Home</Link>
                 </div>

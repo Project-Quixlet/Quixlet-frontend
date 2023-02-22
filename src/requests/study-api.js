@@ -147,6 +147,51 @@ const fetchStudy = (auth, hash) => {
     });
 }
 
+const editStudyField = (auth, hash, pair) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/${hash}/edit/edit-field`;
+        
+        fetchJson(url, {
+            method: 'POST',
+            headers: {
+                'token': auth,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pair)
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
+const addStudyField = (auth, hash, pair) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/${hash}/edit/add-field`;
+        
+        fetchJson(url, {
+            method: 'POST',
+            headers: {
+                'token': auth,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pair)
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
+
 export {
     login,
     fetchUserInfo,
@@ -154,5 +199,7 @@ export {
     fetchRecent,
     fetchStarred,
     fetchOwn,
-    fetchStudy
+    fetchStudy,
+    editStudyField,
+    addStudyField
 }

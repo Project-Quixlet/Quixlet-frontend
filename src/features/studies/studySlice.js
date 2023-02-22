@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchOwn, fetchRecent, fetchStarred, fetchStudy, fetchTrending } from '../../requests/study-api';
+import { addStudyField, editStudyField, fetchOwn, fetchRecent, fetchStarred, fetchStudy, fetchTrending } from '../../requests/study-api';
 
 export const getTrending = createAsyncThunk(
     'studies/getTrending',
@@ -108,6 +108,50 @@ export const getStudy = createAsyncThunk(
     }
 )
 
+export const editField = createAsyncThunk(
+    'studies/editField',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const map = thunkAPI.getState().studies.map;
+
+            const auth = options['auth'] ?? null;
+            const hash = options['hash'];
+            const pair = options['pair'];
+
+            editStudyField(auth, hash, pair)
+                .then(() => {
+                    return resolve({changed: true, hash: hash, pair: pair})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
+export const addField = createAsyncThunk(
+    'studies/addField',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const map = thunkAPI.getState().studies.map;
+
+            const auth = options['auth'] ?? null;
+            const hash = options['hash'];
+            const pair = options['pair'];
+
+            addStudyField(auth, hash, pair)
+                .then((res) => {
+                    return resolve({changed: true, hash: hash, pair: {id: res.id, ...pair}})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
 export const studySlice = createSlice({
     name: 'studies',
     initialState: {
@@ -186,7 +230,27 @@ export const studySlice = createSlice({
         },
         [getStudy.pending]: (state, action) => {
             state.isLoading = true;
-        }
+        },
+        [editField.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+
+            const { hash, pair } = action.payload;
+
+            const study = state.studies[hash];
+            const idx = study.set.indexOf(study.set.find(p => p.id === pair.id));
+            state.studies[hash].set[idx] = pair;
+        },
+        [addField.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+            
+            const { hash, pair } = action.payload;
+            state.studies[hash].set.push(pair);
+            state.studies[hash].size += 1;
+        },
     }
 })
 

@@ -87,6 +87,7 @@
     align-items: center;
 }
 
+.term-new,
 .term-field {
     border: solid 1px black;
 
@@ -127,7 +128,8 @@
 .value h4,
 .definition h4 {
     height: 20px;
-    font-size: 15px;
+    font-size: 12px;
+    text-align: center;
     font-weight: 100;
     opacity: 50%;
 }
@@ -155,4 +157,10 @@
 .remove {
     color: red;
     font-size: 10px;
+}
+
+.term-new {
+    flex-direction: column;
+
+    cursor: pointer;
 }
