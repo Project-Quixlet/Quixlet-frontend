@@ -161,6 +161,6 @@
 
 .term-new {
     flex-direction: column;
-
     cursor: pointer;
+    margin-bottom: 50px;
 }

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addStudyField, editStudyField, fetchOwn, fetchRecent, fetchStarred, fetchStudy, fetchTrending } from '../../requests/study-api';
+import { addStudyField, editStudyField, fetchOwn, fetchRecent, fetchStarred, fetchStudy, fetchTrending, removeStudyField } from '../../requests/study-api';
 
 export const getTrending = createAsyncThunk(
     'studies/getTrending',
@@ -152,6 +152,28 @@ export const addField = createAsyncThunk(
     }
 )
 
+export const removeField = createAsyncThunk(
+    'studies/removeField',
+    async (options, thunkAPI) => {
+        return new Promise((resolve, reject) => {
+            const map = thunkAPI.getState().studies.map;
+
+            const auth = options['auth'] ?? null;
+            const hash = options['hash'];
+            const id = options['id'];
+
+            removeStudyField(auth, hash, id)
+                .then((res) => {
+                    return resolve({changed: true, hash: hash, id: id})
+                })
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                })
+        });
+    }
+)
+
 export const studySlice = createSlice({
     name: 'studies',
     initialState: {
@@ -237,7 +259,6 @@ export const studySlice = createSlice({
             }
 
             const { hash, pair } = action.payload;
-
             const study = state.studies[hash];
             const idx = study.set.indexOf(study.set.find(p => p.id === pair.id));
             state.studies[hash].set[idx] = pair;
@@ -250,6 +271,25 @@ export const studySlice = createSlice({
             const { hash, pair } = action.payload;
             state.studies[hash].set.push(pair);
             state.studies[hash].size += 1;
+
+            const list = state.editor.own.list;
+            const i = list.indexOf(list.find(p => p.hash === hash));
+            state.editor.own.list[i].size += 1;
+        },
+        [removeField.fulfilled]: (state, action) => {
+            if(!action.payload.changed) {
+                return;
+            }
+            
+            const { hash, id } = action.payload;
+            const study = state.studies[hash];
+            const idx = study.set.indexOf(study.set.find(p => p.id === id));
+            state.studies[hash].set.splice(idx, 1);
+            state.studies[hash].size -= 1;
+
+            const list = state.editor.own.list;
+            const i = list.indexOf(list.find(p => p.hash === hash));
+            state.editor.own.list[i].size -= 1;
         },
     }
 })

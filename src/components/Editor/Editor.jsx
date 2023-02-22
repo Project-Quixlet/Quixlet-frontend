@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUser, useUser } from '../../features/account/userSlice';
 import { useAuth } from '../../features/authentication/authSlice';
-import { addField, editField, getOwn, getStudy, useStudies } from '../../features/studies/studySlice';
+import { addField, editField, getOwn, getStudy, removeField, useStudies } from '../../features/studies/studySlice';
 
 import styles from './Editor.module.css'
 
@@ -133,7 +133,7 @@ const TermField = ({pair, current}) => {
     }
 
     const onRemove = () => {
-        console.log('Remove!');
+        dispatch(removeField({auth: auth.token, hash: current, id: pair.id}));
     }
 
     const onPairChanged = () => {

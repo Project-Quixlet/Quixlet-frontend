@@ -191,6 +191,28 @@ const addStudyField = (auth, hash, pair) => {
     });
 }
 
+const removeStudyField = (auth, hash, id) => {
+    return new Promise((resolve, reject) => {
+        const url = `${studyApi}/studies/${hash}/edit/remove-field`;
+        
+        fetchJson(url, {
+            method: 'POST',
+            headers: {
+                'token': auth,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id})
+        })
+            .then(res => {
+                return resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                return reject(err);
+            })
+    });
+}
+
 
 export {
     login,
@@ -201,5 +223,6 @@ export {
     fetchOwn,
     fetchStudy,
     editStudyField,
-    addStudyField
+    addStudyField,
+    removeStudyField
 }
